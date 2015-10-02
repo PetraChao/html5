@@ -1,8 +1,55 @@
-<!Doctype html>
+<!DOCTYPE html>
 <html>
-	<head></head>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>html5Storage</title>
+		<meta name="keywords" content="html5,localStorage,sessionStorage">
+	</head>
 	<body>
 		test
+		<script type="text/javascript">
+		/**
+		*将图片以canvas的形式保存在localstorage中
+		*@key 图片名称
+		*@src 图片相对地址
+		*/
+		function setImg(key, src){
+			var img = document.createElement('img');
+			//图片加载完成时触发回调函数
+			img.addEventListener('load', function(){
+				var imgCanvas = document.createElement('canvas'),
+				imgContext = imgCanvas.getContext('2d');
+				imgCanvas.width = this.width;
+				imgCanvas.height = this.height;
+
+				//渲染图片到canvas中
+				imgContext.drawImage(this, 0, 0, this.width, this.height);
+
+				//用data url的形式取出
+				var imgAsDataURL = imgCanvas.toDataURL('image/png');
+
+				//保存到本地存储中
+				try{
+					localStorage.setItem(key, imgAsDataURL);
+				}
+				catch(e){
+					console.log("storage failed:" + e);
+				}
+			}, false);
+
+			img.src = src;
+		}
+		setImg('img1', 'doll.jpg');
+		/**
+		*从本地取得图片
+		*/
+		function getImg(key){
+			var srcStr = localStorage.getItem(key);
+			var imgObj = document.createElement('img');
+			imgObj.src = srcStr;
+			document.body.appendChild(imgObj);
+		}
+		</script>
 	</body>
 </html>
 
